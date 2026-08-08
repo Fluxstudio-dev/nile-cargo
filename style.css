@@ -27,7 +27,7 @@
     }
     .navbar.scrolled { height: 76px; background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); box-shadow: 0 8px 30px rgba(29, 78, 216, 0.12); border-bottom: 1px solid rgba(29, 78, 216, 0.08); }
     .navbar.scrolled .logo-text { font-size: 20px; }
-    .navbar.scrolled .logo-image { width: 58px; height: 46px; }
+    .navbar.scrolled .logo-image { width: 63px; height: 51px; }
     .navbar.scrolled .nav-links a { font-size: 13px; }
     @keyframes headerSlideDown { 0% { transform: translateY(-100%); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
     .navbar .nav-container { max-width: none; padding: 0 24px; width: 100%; display: flex; justify-content: space-between; align-items: center; position: relative; }
