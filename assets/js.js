@@ -53,28 +53,24 @@
     if (counterSection) counterObserver.observe(counterSection);
 
     // Navbar Scroll Effect
-const navbar = document.querySelector('.navbar');
-
-let ticking = false;
-
-function updateNavbar() {
-    const currentScrollY = window.scrollY;
-
-    if (currentScrollY > 80) {
-        navbar.classList.add('scrolled');
-    } else {
-        navbar.classList.remove('scrolled');
+    const navbar = document.querySelector('.navbar');
+    if (navbar) {
+      let ticking = false;
+      function updateNavbar() {
+        if (window.scrollY > 80) {
+          navbar.classList.add('scrolled');
+        } else {
+          navbar.classList.remove('scrolled');
+        }
+        ticking = false;
+      }
+      window.addEventListener('scroll', () => {
+        if (!ticking) {
+          window.requestAnimationFrame(updateNavbar);
+          ticking = true;
+        }
+      }, { passive: true });
     }
-
-    ticking = false;
-}
-
-window.addEventListener('scroll', () => {
-    if (!ticking) {
-        window.requestAnimationFrame(updateNavbar);
-        ticking = true;
-    }
-}, { passive: true });
 
     // Mobile Menu Toggle
     const mobileMenuToggle = document.getElementById('mobileMenuToggle');
@@ -97,88 +93,92 @@ window.addEventListener('scroll', () => {
     // Projects Slider
     const container = document.getElementById('sliderContainer');
     const track = document.getElementById('projectsTrack');
-    const originalCards = Array.from(track.children);
-    originalCards.forEach(card => track.appendChild(card.cloneNode(true)));
-    const cardWidth = 260;
-    const gap = 20;
-    const stepSize = cardWidth + gap;
-    let currentIndex = 0;
-    let autoSlideTimer = null;
-    let isHovered = false;
-    let isDragging = false;
-    let startX = 0;
-    let currentTranslate = 0;
-    let prevTranslate = 0;
+    if (container && track) {
+      const originalCards = Array.from(track.children);
+      originalCards.forEach(card => track.appendChild(card.cloneNode(true)));
+      const cardWidth = 260;
+      const gap = 20;
+      const stepSize = cardWidth + gap;
+      let currentIndex = 0;
+      let autoSlideTimer = null;
+      let isHovered = false;
+      let isDragging = false;
+      let startX = 0;
+      let currentTranslate = 0;
+      let prevTranslate = 0;
 
-    function moveNext() {
-      if (isHovered || isDragging) return;
-      currentIndex++;
-      track.style.transition = 'transform 0.95s cubic-bezier(0.25, 1, 0.35, 1)';
-      currentTranslate = -(currentIndex * stepSize);
-      track.style.transform = `translateX(${currentTranslate}px)`;
-      if (currentIndex >= originalCards.length) {
-        setTimeout(() => {
-          track.style.transition = 'none';
-          currentIndex = 0;
-          currentTranslate = 0;
-          track.style.transform = `translateX(0px)`;
-        }, 950);
+      function moveNext() {
+        if (isHovered || isDragging) return;
+        currentIndex++;
+        track.style.transition = 'transform 0.95s cubic-bezier(0.25, 1, 0.35, 1)';
+        currentTranslate = -(currentIndex * stepSize);
+        track.style.transform = `translateX(${currentTranslate}px)`;
+        if (currentIndex >= originalCards.length) {
+          setTimeout(() => {
+            track.style.transition = 'none';
+            currentIndex = 0;
+            currentTranslate = 0;
+            track.style.transform = `translateX(0px)`;
+          }, 950);
+        }
       }
-    }
-    function startAutoSlide() { stopAutoSlide(); autoSlideTimer = setInterval(moveNext, 5000); }
-    function stopAutoSlide() { if (autoSlideTimer) clearInterval(autoSlideTimer); }
-    container.addEventListener('mouseenter', () => { isHovered = true; stopAutoSlide(); });
-    container.addEventListener('mouseleave', () => { isHovered = false; if (!isDragging) startAutoSlide(); });
-    container.addEventListener('mousedown', dragStart);
-    window.addEventListener('mouseup', dragEnd);
-    window.addEventListener('mousemove', dragMove);
-    container.addEventListener('touchstart', dragStart);
-    window.addEventListener('touchend', dragEnd);
-    window.addEventListener('touchmove', dragMove);
+      function startAutoSlide() { stopAutoSlide(); autoSlideTimer = setInterval(moveNext, 5000); }
+      function stopAutoSlide() { if (autoSlideTimer) clearInterval(autoSlideTimer); }
+      container.addEventListener('mouseenter', () => { isHovered = true; stopAutoSlide(); });
+      container.addEventListener('mouseleave', () => { isHovered = false; if (!isDragging) startAutoSlide(); });
+      container.addEventListener('mousedown', dragStart);
+      window.addEventListener('mouseup', dragEnd);
+      window.addEventListener('mousemove', dragMove);
+      container.addEventListener('touchstart', dragStart);
+      window.addEventListener('touchend', dragEnd);
+      window.addEventListener('touchmove', dragMove);
 
-    function dragStart(e) {
-      isDragging = true; stopAutoSlide();
-      startX = getX(e); prevTranslate = currentTranslate;
-      track.style.transition = 'none';
-    }
-    function dragMove(e) {
-      if (!isDragging) return;
-      const currentX = getX(e);
-      const walk = currentX - startX;
-      currentTranslate = prevTranslate + walk;
-      track.style.transform = `translateX(${currentTranslate}px)`;
-    }
-    function dragEnd() {
-      if (!isDragging) return;
-      isDragging = false;
-      currentIndex = Math.round(Math.abs(currentTranslate) / stepSize);
-      if (currentIndex >= originalCards.length) currentIndex = 0;
-      track.style.transition = 'transform 0.7s cubic-bezier(0.25, 1, 0.35, 1)';
-      currentTranslate = -(currentIndex * stepSize);
-      track.style.transform = `translateX(${currentTranslate}px)`;
+      function dragStart(e) {
+        isDragging = true; stopAutoSlide();
+        startX = getX(e); prevTranslate = currentTranslate;
+        track.style.transition = 'none';
+      }
+      function dragMove(e) {
+        if (!isDragging) return;
+        const currentX = getX(e);
+        const walk = currentX - startX;
+        currentTranslate = prevTranslate + walk;
+        track.style.transform = `translateX(${currentTranslate}px)`;
+      }
+      function dragEnd() {
+        if (!isDragging) return;
+        isDragging = false;
+        currentIndex = Math.round(Math.abs(currentTranslate) / stepSize);
+        if (currentIndex >= originalCards.length) currentIndex = 0;
+        track.style.transition = 'transform 0.7s cubic-bezier(0.25, 1, 0.35, 1)';
+        currentTranslate = -(currentIndex * stepSize);
+        track.style.transform = `translateX(${currentTranslate}px)`;
+        startAutoSlide();
+      }
+      function getX(e) { return e.type.includes('touch') ? e.touches[0].clientX : e.clientX; }
       startAutoSlide();
     }
-    function getX(e) { return e.type.includes('touch') ? e.touches[0].clientX : e.clientX; }
-    startAutoSlide();
 
     // Hero Slides
     const slides = document.querySelectorAll('.slide');
     const heroTitle = document.querySelector('.hero-title');
     const prevBtn = document.querySelector('.prev-arrow');
     const nextBtn = document.querySelector('.next-arrow');
-    let currentSlide = 0;
-    function changeSlide(index) {
-      slides.forEach((slide, i) => {
-        slide.classList.remove('active');
-        if (i === index) slide.classList.add('active');
-      });
-      heroTitle.style.animation = 'none';
-      heroTitle.offsetHeight;
-      heroTitle.style.animation = 'fadeInUp 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards';
+    if (slides.length && heroTitle && prevBtn && nextBtn) {
+      let currentSlide = 0;
+      function changeSlide(index) {
+        slides.forEach((slide, i) => {
+          slide.classList.remove('active');
+          if (i === index) slide.classList.add('active');
+        });
+        heroTitle.style.animation = 'none';
+        heroTitle.offsetHeight;
+        heroTitle.style.animation = 'fadeInUp 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards';
+      }
+      nextBtn.addEventListener('click', () => { currentSlide = (currentSlide + 1) % slides.length; changeSlide(currentSlide); });
+      prevBtn.addEventListener('click', () => { currentSlide = (currentSlide - 1 + slides.length) % slides.length; changeSlide(currentSlide); });
+      setInterval(() => { currentSlide = (currentSlide + 1) % slides.length; changeSlide(currentSlide); }, 5000);
     }
-    nextBtn.addEventListener('click', () => { currentSlide = (currentSlide + 1) % slides.length; changeSlide(currentSlide); });
-    prevBtn.addEventListener('click', () => { currentSlide = (currentSlide - 1 + slides.length) % slides.length; changeSlide(currentSlide); });
-    setInterval(() => { currentSlide = (currentSlide + 1) % slides.length; changeSlide(currentSlide); }, 5000);
 
     // Custom Cursor
     (function() {
